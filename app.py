@@ -3,6 +3,8 @@ from flask import Flask, send_from_directory, json, session
 from flask_socketio import SocketIO
 from flask_cors import CORS
 
+userList = []
+
 app = Flask(__name__, static_folder='./build/static')
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
@@ -28,6 +30,12 @@ def on_connect():
 @socketio.on('disconnect')
 def on_disconnect():
     print('User disconnected!')
+    
+
+@socketio.on('login')
+def on_login(data):
+    userList.append(data)
+    socketio.emit('userList', userList, broadcast=True, include_self=True)
 
 # When a client emits the event 'chat' to the server, this function is run
 # 'chat' is a custom event name that we just decided
