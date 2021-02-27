@@ -47,8 +47,7 @@ function App() {
     <div>
       <div> Please enter your username and login </div>
       <input type="text" />
-      <button onClick={() => {onShowHide();}}> Login </button>
-      <br></br>
+      <button onClick={() => {onShowHide();}}> Login </button>  {/*Known bug, clicking login a second time hides the board again*/}
       {isShown === true ? (
       <div class="board">
         <Board onClick={onClickSquare} board={board} />
