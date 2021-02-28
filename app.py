@@ -34,7 +34,11 @@ def on_disconnect():
 
 @socketio.on('login')
 def on_login(data):
-    userList.append(data)
+    print("Login detected: " + data)
+    if data not in userList:
+        userList.append(data)
+    for user in userList:
+        print(user)
     socketio.emit('userList', userList, broadcast=True, include_self=True)
 
 # When a client emits the event 'chat' to the server, this function is run
@@ -51,4 +55,5 @@ socketio.run(
     app,
     host=os.getenv('IP', '0.0.0.0'),
     port=8081 if os.getenv('C9_PORT') else int(os.getenv('PORT', 8081)),
+    debug=True
 )
