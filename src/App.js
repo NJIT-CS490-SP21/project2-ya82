@@ -25,6 +25,7 @@ function App() {
 
   function onClickSquare(square_index) {
     socket.emit("move", square_index);
+    console.log("Move sent");
     setBoard((prevBoard) => {
       const newBoard = [...prevBoard];
       if (username === userList[0]) {
@@ -147,37 +148,58 @@ function App() {
       });
     });
   }, []);
+  
+  var requestSent = false;
 
   useEffect(() => {
-    console.log('Board updated');
-    if (winCondition("X")) {
-      if (window.confirm("Game over! " + userList[0] + " wins! Play again?")) {
-        window.location.reload();
-      }
-    } else if (winCondition("O")) {
-      if (window.confirm("Game over! " + userList[1] + " wins! Play again?")) {
-        window.location.reload();
-      }
-    } else if (winCondition("draw")) {
-      if (window.confirm("Game over! Draw! Play again?")) {
-        window.location.reload();
+    if (requestSent === false) {
+      console.log('Checking winCondition');
+      console.log('Current board state', board);
+      if (winCondition("X")) {
+        requestSent = true;
+        console.log("Player X won");
+        if (window.confirm("Game over! " + userList[0] + " wins! Play again?")) {
+          socket.emit("gameOver");
+          window.location.reload();
+        }
+      } else if (winCondition("O")) {
+        requestSent = true;
+        if (window.confirm("Game over! " + userList[1] + " wins! Play again?")) {
+          socket.emit("gameOver");
+          window.location.reload();
+        }
+      } else if (winCondition("draw")) {
+        requestSent = true;
+        if (window.confirm("Game over! Draw! Play again?")) {
+          socket.emit("gameOver");
+          window.location.reload();
+        }
       }
     }
   }, [board]);
 
+  function moveReceived(data) {
+    console.log('Received index', data);
+    console.log('Username:', username);
+    console.log('Userlist:', userList);
+    setBoard((prevBoard) => {
+      const newBoard = [...prevBoard];
+
+      if (username === userList[0]) {
+        newBoard[data] = "O";
+      } else if (username === userList[1]) {
+        newBoard[data] = "X";
+      }
+
+      return newBoard;
+    });
+  }
+
+  const counter = 0;
   useEffect(() => {
     socket.on("move", (data) => {
-      setBoard((prevBoard) => {
-        const newBoard = [...prevBoard];
-
-        if (username === userList[0]) {
-          newBoard[data] = "O";
-        } else if (username === userList[1]) {
-          newBoard[data] = "X";
-        }
-
-        return newBoard;
-      });
+      console.log("Move received");
+      moveReceived(data);
     });
   }, [username, userList]);
   
@@ -202,9 +224,11 @@ function App() {
         <p> Player O: </p>
         <ListItem name={userList[1]} />
         <p> Spectator(s): </p>
+        <p>
         {getSpectators().map(user => 
         <ListItem name={user} />
         )}
+        </p>
         <div class="board">
             <Board onClick={onClickSquare} board={board} />
         </div>

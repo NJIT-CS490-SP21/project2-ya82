@@ -40,15 +40,23 @@ def on_login(data):
     for user in userList:
         print(user)
     socketio.emit('userList', userList, broadcast=True, include_self=True)
+    
+
+@socketio.on('gameOver')
+def gameOver():
+    userList.clear()
+    socketio.emit('userList', userList, broadcast=True, include_self=False)
+
 
 # When a client emits the event 'chat' to the server, this function is run
 # 'chat' is a custom event name that we just decided
 @socketio.on('move')
-def on_chat(data): # data is whatever arg you pass in your emit call on client
+def on_move(data): # data is whatever arg you pass in your emit call on client
     print(str(data))
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
     socketio.emit('move',  data, broadcast=True, include_self=False)
+    print('Move sent')
 
 # Note that we don't call app.run anymore. We call socketio.run with app arg
 socketio.run(
