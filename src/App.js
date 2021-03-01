@@ -148,23 +148,27 @@ function App() {
       });
     });
   }, []);
-  
+
   var requestSent = false;
 
   useEffect(() => {
     if (requestSent === false) {
-      console.log('Checking winCondition');
-      console.log('Current board state', board);
+      console.log("Checking winCondition");
+      console.log("Current board state", board);
       if (winCondition("X")) {
         requestSent = true;
         console.log("Player X won");
-        if (window.confirm("Game over! " + userList[0] + " wins! Play again?")) {
+        if (
+          window.confirm("Game over! " + userList[0] + " wins! Play again?")
+        ) {
           socket.emit("gameOver");
           window.location.reload();
         }
       } else if (winCondition("O")) {
         requestSent = true;
-        if (window.confirm("Game over! " + userList[1] + " wins! Play again?")) {
+        if (
+          window.confirm("Game over! " + userList[1] + " wins! Play again?")
+        ) {
           socket.emit("gameOver");
           window.location.reload();
         }
@@ -179,9 +183,9 @@ function App() {
   }, [board]);
 
   function moveReceived(data) {
-    console.log('Received index', data);
-    console.log('Username:', username);
-    console.log('Userlist:', userList);
+    console.log("Received index", data);
+    console.log("Username:", username);
+    console.log("Userlist:", userList);
     setBoard((prevBoard) => {
       const newBoard = [...prevBoard];
 
