@@ -1,7 +1,7 @@
 # Tic Tac Toe
 
 ## Local Installation
-1. CLone this repository
+1. Clone this repository
 2. Make sure Python 3.6+ is installed
 3. Install the requirements in requirements.txt
 4. `npm install`
