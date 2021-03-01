@@ -5,7 +5,7 @@
 2. Make sure Python 3.6+ is installed
 3. Install the requirements in requirements.txt
 4. `npm install`
-5. 1. Run `echo "DANGEROUSLY_DISABLE_HOST_CHECK=true" > .env.development.local` in the project directory
+5. Run `echo "DANGEROUSLY_DISABLE_HOST_CHECK=true" > .env.development.local` in the project directory
 6. run `python app.py` in the project directory
 7. In a new terminal, run `npm run start` in the project directory
 8. The app will now be running locally on your machine
