@@ -1,5 +1,6 @@
 import "./App.css";
 import "./Board.css";
+import "./Leaderboard.css";
 import { Board } from "./Board.js";
 import { useState, useEffect } from "react";
 import io from "socket.io-client";
@@ -22,6 +23,7 @@ function App() {
   const [isLoggedIn, setLogin] = useState(false);
   const [username, setUsername] = useState("");
   const [userList, setUserList] = useState([null, null]);
+  const [showLeaderboard, setLeaderboard] = useState(false);
 
   function onClickSquare(square_index) {
     socket.emit("move", square_index);
@@ -121,6 +123,12 @@ function App() {
     socket.emit("login", username);
     setLogin((previsLoggedIn) => {
       return true;
+    });
+  }
+  
+  function onLeaderboard() {
+    setLeaderboard((prevLeaderboard) => {
+      return !prevLeaderboard;
     });
   }
 
@@ -235,6 +243,28 @@ function App() {
         </p>
         <div class="board">
             <Board onClick={onClickSquare} board={board} />
+        </div>
+        <div>
+        <button onClick={() => {onLeaderboard()}}> Show leaderboard </button>
+        {showLeaderboard === true ?(
+        <div>
+        <table>
+          <thead>
+            <tr>
+              <th colspan="2">The table header</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>The table body</td>
+              <td>with two columns</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        ) : (
+        <div></div>
+        )}
         </div>
     </div>
     )}
