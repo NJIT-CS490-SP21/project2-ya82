@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-#project2-ya82
-=======
 # Tic Tac Toe
 
 ## Local Installation
