@@ -245,9 +245,9 @@ function App() {
             <Board onClick={onClickSquare} board={board} />
         </div>
         <div>
-        <button onClick={() => {onLeaderboard()}}> Show leaderboard </button>
         {showLeaderboard === true ?(
         <div>
+        <button onClick={() => {onLeaderboard()}}> Hide leaderboard </button>
         <table>
           <thead>
             <tr>
@@ -263,7 +263,9 @@ function App() {
         </table>
         </div>
         ) : (
-        <div></div>
+        <div>
+        <button onClick={() => {onLeaderboard()}}> Show leaderboard </button>
+        </div>
         )}
         </div>
     </div>
