@@ -5,6 +5,7 @@ import { Board } from "./Board.js";
 import { useState, useEffect } from "react";
 import io from "socket.io-client";
 import { ListItem } from "./ListItem.js";
+import { ListUser } from "./ListUser.js";
 
 const socket = io();
 
@@ -23,11 +24,12 @@ function App() {
   const [isLoggedIn, setLogin] = useState(false);
   const [username, setUsername] = useState("");
   const [userList, setUserList] = useState([null, null]);
-  const [showLeaderboard, setLeaderboard] = useState(false);
+  const [showLeaderboard, setLeaderboardStatus] = useState(false);
+  const [leaderboard, setLeaderboard] = useState([]);
+  
 
   function onClickSquare(square_index) {
     socket.emit("move", square_index);
-    console.log("Move sent");
     setBoard((prevBoard) => {
       const newBoard = [...prevBoard];
       if (username === userList[0]) {
@@ -127,7 +129,7 @@ function App() {
   }
   
   function onLeaderboard() {
-    setLeaderboard((prevLeaderboard) => {
+    setLeaderboardStatus((prevLeaderboard) => {
       return !prevLeaderboard;
     });
   }
@@ -155,17 +157,20 @@ function App() {
         return newList;
       });
     });
+    
+    socket.on("user_list", (data) => {
+      console.log('User list event received!');
+      console.log(data);
+      setLeaderboard(data.users);
+    });
   }, []);
 
   var requestSent = false;
 
   useEffect(() => {
     if (requestSent === false) {
-      console.log("Checking winCondition");
-      console.log("Current board state", board);
       if (winCondition("X")) {
         requestSent = true;
-        console.log("Player X won");
         if (
           window.confirm("Game over! " + userList[0] + " wins! Play again?")
         ) {
@@ -191,9 +196,6 @@ function App() {
   }, [board]);
 
   function moveReceived(data) {
-    console.log("Received index", data);
-    console.log("Username:", username);
-    console.log("Userlist:", userList);
     setBoard((prevBoard) => {
       const newBoard = [...prevBoard];
 
@@ -210,7 +212,6 @@ function App() {
   const counter = 0;
   useEffect(() => {
     socket.on("move", (data) => {
-      console.log("Move received");
       moveReceived(data);
     });
   }, [username, userList]);
@@ -251,14 +252,11 @@ function App() {
         <table>
           <thead>
             <tr>
-              <th colspan="2">The table header</th>
+              <th colspan="2">Leaderboard</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>The table body</td>
-              <td>with two columns</td>
-            </tr>
+            {leaderboard.map((user, index) => <ListUser name={user} /> )}
           </tbody>
         </table>
         </div>
