@@ -99,7 +99,7 @@ def on_move(data): # data is whatever arg you pass in your emit call on client
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
     socketio.emit('move',  data, broadcast=True, include_self=False)
-    print('Move sent')
+    print('Move sent') #comment
     
     
 if __name__ == "__main__":
