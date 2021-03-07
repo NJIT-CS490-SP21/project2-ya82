@@ -37,12 +37,7 @@ def index(filename):
 # When a client connects from this Socket connection, this function is run
 @socketio.on('connect')
 def on_connect():
-    users = []
-    all_people = models.Person.query.all()
-    for person in all_people:
-        users.append(person.username)
-    print(users)
-    socketio.emit('leaderboard_list', {'users':users})
+    print('Connected!')
 
 # When a client disconnects from this Socket connection, this function is run
 @socketio.on('disconnect')
@@ -53,11 +48,28 @@ def on_disconnect():
 @socketio.on('login')
 def on_login(data):
     print("Login detected: " + data)
-    new_user = models.Person(username=data, email='{0}@stuff.com'.format(data))
-    db.session.add(new_user)
-    db.session.commit()
+    duplicate = False
+    for name in models.Person.query.all():
+        if name.username == data:
+            duplicate = True
+    
+    if duplicate is False:
+        new_user = models.Person(username=data, score=0)
+        db.session.add(new_user)
+        db.session.commit()
+        
     all_people = models.Person.query.all()
     print(all_people)
+    
+    
+    users = []
+    scores = []
+    for person in all_people:
+        users.append(person.username)
+        scores.append(person.score)
+    print(users, scores)
+    socketio.emit('leaderboard_list', (users, scores))
+    
     if data not in userList:
         userList.append(data)
     for user in userList:

@@ -25,7 +25,8 @@ function App() {
   const [username, setUsername] = useState("");
   const [userList, setUserList] = useState([null, null]);
   const [showLeaderboard, setLeaderboardStatus] = useState(false);
-  const [leaderboard, setLeaderboard] = useState([]);
+  const [leaderboad_names, setLeaderboard_names] = useState([]);
+  const [leaderboad_scores, setLeaderboard_scores] = useState([]);
   
 
   function onClickSquare(square_index) {
@@ -158,10 +159,11 @@ function App() {
       });
     });
     
-    socket.on("leaderboard_list", (data) => {
+    socket.on("leaderboard_list", (users, scores) => {
       console.log('User list event received!');
-      console.log(data);
-      setLeaderboard(data.users);
+      console.log(users, scores);
+      setLeaderboard_names(users);
+      setLeaderboard_scores(scores);
     });
   }, []);
 
@@ -256,7 +258,7 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {leaderboard.map((user, index) => <ListUser name={user} /> )}
+            {leaderboad_names.map((user, index) => <ListUser name={user} score={leaderboad_scores[index]} /> )}
           </tbody>
         </table>
         </div>
