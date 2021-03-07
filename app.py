@@ -54,7 +54,7 @@ def on_login(data):
             duplicate = True
     
     if duplicate is False:
-        new_user = models.Person(username=data, score=0)
+        new_user = models.Person(username=data, score=100)
         db.session.add(new_user)
         db.session.commit()
         
@@ -78,7 +78,15 @@ def on_login(data):
     
 
 @socketio.on('gameOver')
-def gameOver():
+def gameOver(winner, loser):
+    print('Game Over!', winner, loser)
+    all_users = db.session.query(models.Person).all()
+    for user in all_users:
+        if user.username == winner:
+            user.score = user.score + 0.5
+        if user.username == loser:
+            user.score = user.score - 0.5
+    db.session.commit()
     userList.clear()
     socketio.emit('userList', userList, broadcast=True, include_self=False)
 

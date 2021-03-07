@@ -172,25 +172,23 @@ function App() {
   useEffect(() => {
     if (requestSent === false) {
       if (winCondition("X")) {
+        socket.emit("gameOver", userList[0], userList[1]);
         requestSent = true;
-        if (
-          window.confirm("Game over! " + userList[0] + " wins! Play again?")
-        ) {
-          socket.emit("gameOver");
+        if (window.confirm("Game over! " + userList[0] + " wins! Play again?")) {
           window.location.reload();
         }
       } else if (winCondition("O")) {
+        socket.emit("gameOver", userList[1], userList[0]);
         requestSent = true;
         if (
           window.confirm("Game over! " + userList[1] + " wins! Play again?")
         ) {
-          socket.emit("gameOver");
           window.location.reload();
         }
       } else if (winCondition("draw")) {
+        socket.emit("gameOver", userList[0], userList[0]);
         requestSent = true;
         if (window.confirm("Game over! Draw! Play again?")) {
-          socket.emit("gameOver");
           window.location.reload();
         }
       }
