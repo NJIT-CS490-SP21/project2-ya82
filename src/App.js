@@ -158,7 +158,7 @@ function App() {
       });
     });
     
-    socket.on("user_list", (data) => {
+    socket.on("leaderboard_list", (data) => {
       console.log('User list event received!');
       console.log(data);
       setLeaderboard(data.users);
