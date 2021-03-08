@@ -34,9 +34,6 @@ export function RenderBoard(props) {
     
     function checkWinner(boardCopy) {
         const winnerCheck = calculateWinner(boardCopy);
-        console.log(boardCopy);
-        console.log(winnerCheck);
-        console.log(!boardCopy.includes(null));
         if (winnerCheck === 'X') {
             socket.emit('gameOver', {winner: props.userList.X});
         }
