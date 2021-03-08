@@ -1,18 +1,32 @@
 import React from 'react';
 import './Board.css';
 import { RenderSquare } from './Square.js';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import io from 'socket.io-client';
+
+const socket = io();
 
 export function RenderBoard(props) {
     const [board, setBoard] = useState([null, null, null, null, null, null, null, null, null]);
     
     function onClickBoard(index) {
+        socket.emit('move', { index: index });
         setBoard(prevBoard => {
             const newBoard = [...prevBoard];
             newBoard[index] = 'X';
             return newBoard;
         });
     }
+    
+    useEffect(() => {
+        socket.on('move', (data) => {
+            setBoard(prevBoard => {
+                const newBoard = [...prevBoard];
+                newBoard[data['index']] = 'X';
+                return newBoard;
+            });
+        });
+    }, []);
     
     return (
       <div class="board">
