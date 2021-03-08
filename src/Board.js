@@ -11,6 +11,7 @@ export function RenderBoard(props) {
     const [isXNext, setIsXNext] = useState(true);
     const [gameOver, setGameOver] = useState(false);
     const [winner, setWinner] = useState("");
+    const [showRestartButton, setRestartButton] = useState(false);
     
     function calculateWinner(squares) {
         const lines = [
@@ -50,6 +51,7 @@ export function RenderBoard(props) {
     
     function onClickBoard(index) {
         if ((props.currentUser === props.userList.X || props.currentUser === props.userList.O) && gameOver === false) {
+            setRestartButton(true);
             const newBoard = [...board];
             if (isXNext === true) {
                 newBoard[index] = 'X';
@@ -98,7 +100,13 @@ export function RenderBoard(props) {
                 <p> {winner} wins! </p>
               )}
             </div>
-            <button onClick={onClickRestart}>Restart</button>
+            <div>
+              {showRestartButton === true ? (
+                <button onClick={onClickRestart}>Restart</button>
+              ) : (
+                <div></div>
+              )}
+            </div>
           </div>
         ) : (
           <div></div>
