@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import { RenderBoard } from './Board.js';
 import { ListUsers } from './ListUsers.js';
+import { RenderLeaderboard } from './Leaderboard.js';
 import { useState, useRef, useEffect } from 'react';
 import io from 'socket.io-client';
 
@@ -11,7 +12,8 @@ function App() {
   const [userList, setUserList] = useState({"X": "", "O":"", "Spectators":[]});
   const loginRef = useRef(null);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [currentUser, setCurrentUser] = useState("")
+  const [currentUser, setCurrentUser] = useState("");
+  const [showLeaderboard, setLeaderboard] = useState(false);
   
   function updateUsers(user) {
     const newList = {...userList};
@@ -27,6 +29,10 @@ function App() {
     socket.emit('login', {newUsers: newList});
     setCurrentUser(user);
     setLoggedIn(prevState => !prevState);
+  }
+  
+  function onClickLeaderboard() {
+    setLeaderboard(prevLeaderboard => !prevLeaderboard);
   }
   
   useEffect(() => {
@@ -67,6 +73,19 @@ function App() {
         
       </div>
       )}
+      
+      <div>
+        {showLeaderboard === false ? (
+        <div>
+          <button onClick={onClickLeaderboard}> Show Leaderboard </button>
+        </div>
+        ) : (
+        <div>
+          <button onClick={onClickLeaderboard}> Hide Leaderboard </button>
+          <RenderLeaderboard />
+        </div>
+        )}
+      </div>
     </div>
   );
 }
