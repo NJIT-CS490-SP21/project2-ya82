@@ -9,7 +9,7 @@ const socket = io();
 export function RenderBoard(props) {
     const [board, setBoard] = useState([null, null, null, null, null, null, null, null, null]);
     const [isXNext, setIsXNext] = useState(true);
-    const [showRestartButton, setRestartButton] = useState(false);
+    const [gameOver, setGameOver] = useState(false);
     const [winner, setWinner] = useState("");
     
     function calculateWinner(squares) {
@@ -33,7 +33,7 @@ export function RenderBoard(props) {
     }
     
     function onClickBoard(index) {
-        if (props.currentUser === props.userList.X || props.currentUser === props.userList.O) {
+        if ((props.currentUser === props.userList.X || props.currentUser === props.userList.O) && gameOver === false) {
             const newBoard = [...board];
             if (isXNext === true) {
                 newBoard[index] = 'X';
@@ -41,28 +41,27 @@ export function RenderBoard(props) {
             else {
                 newBoard[index] = 'O';
             }
-            
             socket.emit('move', {updateBoard: newBoard, XNext: !isXNext});
-            const winnerCheck = calculateWinner(board);
+            
+            const winnerCheck = calculateWinner(newBoard);
             if (winnerCheck === 'X') {
                 setWinner(props.userList.X);
-                setRestartButton(true);
+                setGameOver(true);
             }
             
             else if (winnerCheck === 'O') {
                 setWinner(props.userList.O);
-                setRestartButton(true);
+                setGameOver(true);
             }
             
             else if (winnerCheck === "" && !board.includes(null)) {
                 setWinner("Draw!");
-                setRestartButton(true);
+                setGameOver(true);
             }
         }
     }
     
     function onClickRestart() {
-        setRestartButton(false);
         const emptyBoard = [null, null, null, null, null, null, null, null, null];
         socket.emit('restart', {updateBoard: emptyBoard});
     }
@@ -74,17 +73,27 @@ export function RenderBoard(props) {
         });
         
         socket.on('restart', (data) => {
+            setGameOver(false);
             setBoard(data.updateBoard);
             setIsXNext(true);
+            setWinner("");
         });
     }, []);
     
     return (
       <div>
-        {showRestartButton === true ? (
+        {gameOver === true ? (
           <div>
+            <p> Game Over! </p>
+            <div>
+              {winner === "Draw!" ? (
+                <p> Draw! </p>
+              ) : (
+                <p> {winner} wins! </p>
+              )}
+            </div>
             <button onClick={onClickRestart}>Restart</button>
-           </div>
+          </div>
         ) : (
           <div></div>
         )}
