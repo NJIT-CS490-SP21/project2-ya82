@@ -9,6 +9,7 @@ const socket = io();
 function App() {
   const [userList, setUserList] = useState({"X": "", "O":"", "Spectators":[]});
   const loginRef = useRef(null);
+  const [loggedIn, setLoggedIn] = useState(false);
   
   function updateUsers(user) {
     const newList = {...userList};
@@ -21,7 +22,8 @@ function App() {
     else {
       newList.Spectators = [...newList.Spectators, user];
     }
-    socket.emit('login', { newUsers: newList });
+    socket.emit('login', {newUsers: newList});
+    setLoggedIn(prevState => !prevState);
   }
   
   useEffect(() => {
@@ -32,9 +34,16 @@ function App() {
   
   return (
     <div>
-      <input ref={loginRef} type="text" />
-      <button onClick={() => updateUsers(loginRef.current.value)}>Login</button>
-      <RenderBoard />
+      {loggedIn === false ? (
+      <div>
+        <input ref={loginRef} type="text" />
+        <button onClick={() => updateUsers(loginRef.current.value)}>Login</button>
+      </div>
+      ) : (
+      <div>
+        <RenderBoard />
+      </div>
+      )}
     </div>
   );
 }

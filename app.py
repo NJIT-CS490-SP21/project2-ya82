@@ -22,13 +22,11 @@ def index(filename):
 
 @socketio.on('login')
 def on_login(data):
-    print(data)
     socketio.emit('login', data, broadcast=True, include_self=True)
 
 
 @socketio.on('move')
 def on_move(data):
-    print(data)
     socketio.emit('move', data, broadcast=True, include_self=False)
 
 

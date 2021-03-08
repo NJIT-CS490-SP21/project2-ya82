@@ -10,7 +10,7 @@ export function RenderBoard(props) {
     const [board, setBoard] = useState([null, null, null, null, null, null, null, null, null]);
     
     function onClickBoard(index) {
-        socket.emit('move', { index: index });
+        socket.emit('move', {index: index});
         setBoard(prevBoard => {
             const newBoard = [...prevBoard];
             newBoard[index] = 'X';
