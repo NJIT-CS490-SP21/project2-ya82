@@ -9,6 +9,8 @@ const socket = io();
 export function RenderBoard(props) {
     const [board, setBoard] = useState([null, null, null, null, null, null, null, null, null]);
     const [isXNext, setIsXNext] = useState(true);
+    const [showRestartButton, setRestartButton] = useState(false);
+    const [winner, setWinner] = useState("");
     
     function calculateWinner(squares) {
         const lines = [
@@ -41,25 +43,26 @@ export function RenderBoard(props) {
             }
             
             socket.emit('move', {updateBoard: newBoard, XNext: !isXNext});
-            const winner = calculateWinner(board);
-            if (winner === 'X') {
-                winner = props.userList.X;
-                /*Insert restart button*/
+            const winnerCheck = calculateWinner(board);
+            if (winnerCheck === 'X') {
+                setWinner(props.userList.X);
+                setRestartButton(true);
             }
             
-            else if (winner === 'O') {
-                winner = props.userList.O;
-                /*Insert restart button*/
+            else if (winnerCheck === 'O') {
+                setWinner(props.userList.O);
+                setRestartButton(true);
             }
             
-            else if (winner === "" && !board.includes(null)) {
-                winner = "Draw!";
-                /*Insert restart button*/
+            else if (winnerCheck === "" && !board.includes(null)) {
+                setWinner("Draw!");
+                setRestartButton(true);
             }
         }
     }
     
     function onClickRestart() {
+        setRestartButton(false);
         const emptyBoard = [null, null, null, null, null, null, null, null, null];
         socket.emit('restart', {updateBoard: emptyBoard});
     }
@@ -78,9 +81,13 @@ export function RenderBoard(props) {
     
     return (
       <div>
+        {showRestartButton === true ? (
           <div>
             <button onClick={onClickRestart}>Restart</button>
-          </div>
+           </div>
+        ) : (
+          <div></div>
+        )}
           <div class="board">
             <RenderSquare clickHandler={() => onClickBoard(0)} letter={board[0]} />
             <RenderSquare clickHandler={() => onClickBoard(1)} letter={board[1]} />
