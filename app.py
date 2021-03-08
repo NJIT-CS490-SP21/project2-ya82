@@ -27,7 +27,12 @@ def on_login(data):
 
 @socketio.on('move')
 def on_move(data):
-    socketio.emit('move', data, broadcast=True, include_self=False)
+    socketio.emit('move', data, broadcast=True, include_self=True)
+    
+
+@socketio.on('restart')
+def on_restart(data):
+    socketio.emit('restart', data, broadcast=True, include_self=True)
 
 
 socketio.run(

@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { RenderBoard } from './Board.js';
+import { ListUsers } from './ListUsers.js';
 import { useState, useRef, useEffect } from 'react';
 import io from 'socket.io-client';
 
@@ -10,6 +11,7 @@ function App() {
   const [userList, setUserList] = useState({"X": "", "O":"", "Spectators":[]});
   const loginRef = useRef(null);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState("")
   
   function updateUsers(user) {
     const newList = {...userList};
@@ -23,6 +25,7 @@ function App() {
       newList.Spectators = [...newList.Spectators, user];
     }
     socket.emit('login', {newUsers: newList});
+    setCurrentUser(user);
     setLoggedIn(prevState => !prevState);
   }
   
@@ -41,7 +44,27 @@ function App() {
       </div>
       ) : (
       <div>
-        <RenderBoard />
+        <div>
+          <RenderBoard currentUser={currentUser} userList={userList} />
+        </div>
+        
+        <div>
+          <p> Player X </p>
+          <ul>
+            <ListUsers name={userList.X} />
+          </ul>
+          
+          <p> Player O </p>
+          <ul>
+            <ListUsers name={userList.O} />
+          </ul>
+          
+          <p> Spectators </p>
+          <ul>
+            {userList.Spectators.map(user => <ListUsers name={user} />)}
+          </ul>
+        </div>
+        
       </div>
       )}
     </div>
