@@ -32,6 +32,25 @@ export function RenderBoard(props) {
         return null;
     }
     
+    function checkWinner(boardCopy) {
+        const winnerCheck = calculateWinner(boardCopy);
+        console.log(boardCopy);
+        console.log(winnerCheck);
+        console.log(!boardCopy.includes(null));
+        if (winnerCheck === 'X') {
+            socket.emit('gameOver', {winner: props.userList.X});
+        }
+        
+        else if (winnerCheck === 'O') {
+            socket.emit('gameOver', {winner: props.userList.O});
+        }
+        
+        else if (winnerCheck === null && !boardCopy.includes(null)) {
+            console.log('Draw detected');
+            socket.emit('gameOver', {winner: "Draw!"});
+        }
+    }
+    
     function onClickBoard(index) {
         if ((props.currentUser === props.userList.X || props.currentUser === props.userList.O) && gameOver === false) {
             const newBoard = [...board];
@@ -42,22 +61,7 @@ export function RenderBoard(props) {
                 newBoard[index] = 'O';
             }
             socket.emit('move', {updateBoard: newBoard, XNext: !isXNext});
-            
-            const winnerCheck = calculateWinner(newBoard);
-            if (winnerCheck === 'X') {
-                setWinner(props.userList.X);
-                setGameOver(true);
-            }
-            
-            else if (winnerCheck === 'O') {
-                setWinner(props.userList.O);
-                setGameOver(true);
-            }
-            
-            else if (winnerCheck === "" && !board.includes(null)) {
-                setWinner("Draw!");
-                setGameOver(true);
-            }
+            checkWinner(newBoard);
         }
     }
     
@@ -70,6 +74,11 @@ export function RenderBoard(props) {
         socket.on('move', (data) => {
             setBoard(data.updateBoard);
             setIsXNext(data.XNext);
+        });
+        
+        socket.on('gameOver', (data) => {
+            setGameOver(true);
+            setWinner(data.winner);
         });
         
         socket.on('restart', (data) => {

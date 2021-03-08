@@ -30,6 +30,11 @@ def on_move(data):
     socketio.emit('move', data, broadcast=True, include_self=True)
     
 
+@socketio.on('gameOver')
+def on_gameOver(data):
+    socketio.emit('gameOver', data, broadcast=True, include_self=True)
+    
+
 @socketio.on('restart')
 def on_restart(data):
     socketio.emit('restart', data, broadcast=True, include_self=True)
