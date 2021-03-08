@@ -2,8 +2,17 @@ import os
 from flask import Flask, send_from_directory, json, session
 from flask_socketio import SocketIO
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 app = Flask(__name__, static_folder='./build/static')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+from models import Player
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -40,9 +49,10 @@ def on_restart(data):
     socketio.emit('restart', data, broadcast=True, include_self=True)
 
 
-socketio.run(
-    app,
-    debug=True,
-    host=os.getenv('IP', '0.0.0.0'),
-    port=8081 if os.getenv('C9_PORT') else int(os.getenv('PORT', 8081)),
-)
+if __name__ == "__main__":
+    socketio.run(
+        app,
+        debug=True,
+        host=os.getenv('IP', '0.0.0.0'),
+        port=8081 if os.getenv('C9_PORT') else int(os.getenv('PORT', 8081)),
+    )
