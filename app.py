@@ -18,6 +18,12 @@ socketio = SocketIO(
 @app.route('/<path:filename>')
 def index(filename):
     return send_from_directory('./build', filename)
+    
+
+@socketio.on('login')
+def on_login(data):
+    print(data)
+    socketio.emit('login', data, broadcast=True, include_self=True)
 
 
 @socketio.on('move')

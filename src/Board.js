@@ -22,7 +22,7 @@ export function RenderBoard(props) {
         socket.on('move', (data) => {
             setBoard(prevBoard => {
                 const newBoard = [...prevBoard];
-                newBoard[data['index']] = 'X';
+                newBoard[data.index] = 'X';
                 return newBoard;
             });
         });
