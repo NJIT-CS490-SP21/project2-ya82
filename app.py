@@ -38,24 +38,9 @@ def on_login(data):
         db.session.commit()
         
     leaderboard = {'players': [], 'scores': []}
-    for player in db.session.query(Player).all():
+    for player in db.session.query(Player).order_by(Player.score.desc()).all():
         leaderboard['players'].append(player.username)
         leaderboard['scores'].append(player.score)
-        
-    cleanPass = False
-    while cleanPass is False:
-        cleanPass = True
-        for i in range(len(leaderboard['scores'])):
-            if i < (len(leaderboard['scores']) - 1):
-                if leaderboard['scores'][i] < leaderboard['scores'][i + 1]:
-                    cleanPass = False
-                    tempScore = leaderboard['scores'][i]
-                    leaderboard['scores'][i] = leaderboard['scores'][i + 1]
-                    leaderboard['scores'][i + 1] = tempScore
-                    
-                    tempPlayer = leaderboard['players'][i]
-                    leaderboard['players'][i] = leaderboard['players'][i + 1]
-                    leaderboard['players'][i + 1] = tempPlayer
 
     socketio.emit('updateLeaderboard', leaderboard, broadcast=True, include_self=True)
     socketio.emit('login', data, broadcast=True, include_self=True)
@@ -80,24 +65,9 @@ def on_gameOver(data):
         db.session.commit()
 
     leaderboard = {'players': [], 'scores': []}
-    for player in db.session.query(Player).all():
+    for player in db.session.query(Player).order_by(Player.score.desc()).all():
         leaderboard['players'].append(player.username)
         leaderboard['scores'].append(player.score)
-        
-    cleanPass = False
-    while cleanPass is False:
-        cleanPass = True
-        for i in range(len(leaderboard['scores'])):
-            if i < (len(leaderboard['scores']) - 1):
-                if leaderboard['scores'][i] < leaderboard['scores'][i + 1]:
-                    cleanPass = False
-                    tempScore = leaderboard['scores'][i]
-                    leaderboard['scores'][i] = leaderboard['scores'][i + 1]
-                    leaderboard['scores'][i + 1] = tempScore
-                    
-                    tempPlayer = leaderboard['players'][i]
-                    leaderboard['players'][i] = leaderboard['players'][i + 1]
-                    leaderboard['players'][i + 1] = tempPlayer
 
     socketio.emit('updateLeaderboard', leaderboard, broadcast=True, include_self=True)
     socketio.emit('gameOver', data, broadcast=True, include_self=True)
