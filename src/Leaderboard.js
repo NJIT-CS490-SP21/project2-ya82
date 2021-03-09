@@ -6,16 +6,17 @@ export function RenderLeaderboard(props) {
         <table>
             <thead>
                 <tr>
-                    <th colspan="2">The table header</th>
+                    <th colspan="2">Leaderboard</th>
                 </tr>
             </thead>
             <tbody>
+                {props.leaderboard.players.map((player, index) =>
                 <tr>
-                    <td>The table body</td>
-                    <td>with two columns</td>
+                    <td> {player} </td>
+                    <td> {props.leaderboard.scores[index]} </td>
                 </tr>
+                )}
             </tbody>
         </table>
-        
         ); 
 }

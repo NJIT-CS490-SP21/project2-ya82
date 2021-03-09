@@ -13,31 +13,38 @@ function App() {
   const loginRef = useRef(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState("");
-  const [showLeaderboard, setLeaderboard] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [leaderboard, setLeaderboard] = useState({});
   
   function updateUsers(user) {
-    const newList = {...userList};
-    if (newList.X === "") {
-      newList.X = user;
+    if (user !== "") {
+      const newList = {...userList};
+      if (newList.X === "") {
+        newList.X = user;
+      }
+      else if (newList.O === "") {
+        newList.O = user;
+      }
+      else {
+        newList.Spectators = [...newList.Spectators, user];
+      }
+      socket.emit('login', {newUsers: newList, currentUser: user});
+      setCurrentUser(user);
+      setLoggedIn(prevState => !prevState);
     }
-    else if (newList.O === "") {
-      newList.O = user;
-    }
-    else {
-      newList.Spectators = [...newList.Spectators, user];
-    }
-    socket.emit('login', {newUsers: newList});
-    setCurrentUser(user);
-    setLoggedIn(prevState => !prevState);
   }
   
   function onClickLeaderboard() {
-    setLeaderboard(prevLeaderboard => !prevLeaderboard);
+    setShowLeaderboard(prevShowLeaderboard => !prevShowLeaderboard);
   }
   
   useEffect(() => {
     socket.on('login', (data) => {
       setUserList(data.newUsers);
+    });
+    
+    socket.on('updateLeaderboard', (data) => {
+      setLeaderboard(data);
     });
   }, []);
   
@@ -71,21 +78,22 @@ function App() {
           </ul>
         </div>
         
+        <div>
+          {showLeaderboard === false ? (
+          <div>
+            <button onClick={onClickLeaderboard}> Show Leaderboard </button>
+          </div>
+          ) : (
+          <div>
+            <button onClick={onClickLeaderboard}> Hide Leaderboard </button>
+            <RenderLeaderboard leaderboard={leaderboard} />
+          </div>
+          )}
+        </div>
       </div>
       )}
       
-      <div>
-        {showLeaderboard === false ? (
-        <div>
-          <button onClick={onClickLeaderboard}> Show Leaderboard </button>
-        </div>
-        ) : (
-        <div>
-          <button onClick={onClickLeaderboard}> Hide Leaderboard </button>
-          <RenderLeaderboard />
-        </div>
-        )}
-      </div>
+      
     </div>
   );
 }

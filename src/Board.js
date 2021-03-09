@@ -36,11 +36,11 @@ export function RenderBoard(props) {
     function checkWinner(boardCopy) {
         const winnerCheck = calculateWinner(boardCopy);
         if (winnerCheck === 'X') {
-            socket.emit('gameOver', {winner: props.userList.X});
+            socket.emit('gameOver', {winner: props.userList.X, loser: props.userList.O});
         }
         
         else if (winnerCheck === 'O') {
-            socket.emit('gameOver', {winner: props.userList.O});
+            socket.emit('gameOver', {winner: props.userList.O, loser: props.userList.X});
         }
         
         else if (winnerCheck === null && !boardCopy.includes(null)) {
