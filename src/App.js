@@ -86,7 +86,7 @@ function App() {
           ) : (
           <div>
             <button onClick={onClickLeaderboard}> Hide Leaderboard </button>
-            <RenderLeaderboard leaderboard={leaderboard} />
+            <RenderLeaderboard leaderboard={leaderboard} currentUser={currentUser} />
           </div>
           )}
         </div>

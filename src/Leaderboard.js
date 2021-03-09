@@ -12,7 +12,11 @@ export function RenderLeaderboard(props) {
             <tbody>
                 {props.leaderboard.players.map((player, index) =>
                 <tr>
+                    {player === props.currentUser ? (
+                    <td class="currentUser"> {player} </td>
+                    ) : (
                     <td> {player} </td>
+                    )}
                     <td> {props.leaderboard.scores[index]} </td>
                 </tr>
                 )}
