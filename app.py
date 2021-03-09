@@ -32,7 +32,10 @@ def index(filename):
 @socketio.on('login')
 def on_login(data):
     from models import Player
-    if db.session.query(Player).filter_by(username=data['currentUser']).first().username != data['currentUser']:
+    all_players = []
+    for player in db.session.query(Player).all():
+        all_players.append(player.username)
+    if data['currentUser'] not in all_players:
         currentUser = Player(username=data['currentUser'], score=100)
         db.session.add(currentUser)
         db.session.commit()
