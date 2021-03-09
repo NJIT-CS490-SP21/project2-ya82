@@ -77,15 +77,8 @@ def on_gameOver(data):
         loser.score = loser.score - 1
         print(winner.score)
         print(loser.score)
+        db.session.commit()
 
-    db.session.commit()
-    socketio.emit('gameOver', data, broadcast=True, include_self=True)
-    
-
-@socketio.on('restart')
-def on_restart(data):
-    from models import Player
-    
     leaderboard = {'players': [], 'scores': []}
     for player in db.session.query(Player).all():
         leaderboard['players'].append(player.username)
@@ -105,9 +98,14 @@ def on_restart(data):
                     tempPlayer = leaderboard['players'][i]
                     leaderboard['players'][i] = leaderboard['players'][i + 1]
                     leaderboard['players'][i + 1] = tempPlayer
-    
-    socketio.emit('restart', data, broadcast=True, include_self=True)
+
     socketio.emit('updateLeaderboard', leaderboard, broadcast=True, include_self=True)
+    socketio.emit('gameOver', data, broadcast=True, include_self=True)
+    
+
+@socketio.on('restart')
+def on_restart(data):
+    socketio.emit('restart', data, broadcast=True, include_self=True)
 
 
 if __name__ == "__main__":
