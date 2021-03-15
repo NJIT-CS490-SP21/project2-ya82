@@ -5,13 +5,13 @@
 1. Clone this repository
 2. Make sure Python 3.6+ is installed
 
-## Requirements
+### Requirements
 
 1. `pip install -r requirements.txt`
 2. `npm install`
 3. Install and login with heroku: https://devcenter.heroku.com/articles/heroku-cli
 
-# Setup
+### Setup
 
 1. Run `echo "DANGEROUSLY_DISABLE_HOST_CHECK=true" > .env.development.local` in the project directory
 2. You will need a database url from heroku:
@@ -26,7 +26,7 @@
 11. `>>> db.create_all()`
 12. `quit()`
 
-# Run
+### Run
 
 1. run `python app.py` in the project directory
 2. In a new terminal, run `npm run start` in the project directory
