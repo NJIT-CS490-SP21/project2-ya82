@@ -1,15 +1,15 @@
 table,
 td {
-    border: 1px solid #333;
+  border: 1px solid #333;
 }
 
 thead,
 tfoot {
-    background-color: #333;
-    color: #fff;
+  background-color: #333;
+  color: #fff;
 }
 
 .currentUser {
-    font-weight: bold;
-    color: blue;
+  font-weight: bold;
+  color: blue;
 }
