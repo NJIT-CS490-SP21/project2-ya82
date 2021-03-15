@@ -1,26 +1,47 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './Leaderboard.css';
 
-export function RenderLeaderboard(props) {
+export default function RenderLeaderboard({ leaderboard, currentUser }) {
   return (
     <table>
       <thead>
         <tr>
-          <th colspan="2">Leaderboard</th>
+          <th colSpan="2">Leaderboard</th>
         </tr>
       </thead>
       <tbody>
-        {props.leaderboard.players.map((player, index) => (
+        {leaderboard.players.map((player, index) => (
           <tr>
-            {player === props.currentUser ? (
-              <td class="currentUser"> {player} </td>
+            {player === currentUser ? (
+              <td className="currentUser">
+                {' '}
+                {player}
+                {' '}
+              </td>
             ) : (
-              <td> {player} </td>
+              <td>
+                {' '}
+                {player}
+                {' '}
+              </td>
             )}
-            <td> {props.leaderboard.scores[index]} </td>
+            <td>
+              {' '}
+              {leaderboard.scores[index]}
+              {' '}
+            </td>
           </tr>
         ))}
       </tbody>
     </table>
   );
 }
+
+RenderLeaderboard.propTypes = {
+  leaderboard: PropTypes.shape({
+    players: PropTypes.arrayOf(PropTypes.string),
+    scores: PropTypes.arrayOf(PropTypes.number),
+  }).isRequired,
+  currentUser: PropTypes.string.isRequired,
+};

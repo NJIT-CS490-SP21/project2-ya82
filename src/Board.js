@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import './Board.css';
-import { RenderSquare } from './Square.js';
-import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
+import RenderSquare from './Square';
 
 const socket = io();
 
-export function RenderBoard(props) {
+export default function RenderBoard(props) {
   const [board, setBoard] = useState([null, null, null, null, null, null, null, null, null]);
   const [isXNext, setIsXNext] = useState(true);
   const [gameOver, setGameOver] = useState(false);
@@ -24,7 +24,7 @@ export function RenderBoard(props) {
       [0, 4, 8],
       [2, 4, 6],
     ];
-    for (let i = 0; i < lines.length; i++) {
+    for (let i = 0; i < lines.length; i += 1) {
       const [a, b, c] = lines[i];
       if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
         return squares[a];
@@ -40,15 +40,14 @@ export function RenderBoard(props) {
     } else if (winnerCheck === 'O') {
       socket.emit('gameOver', { winner: props.userList.O, loser: props.userList.X });
     } else if (winnerCheck === null && !boardCopy.includes(null)) {
-      console.log('Draw detected');
       socket.emit('gameOver', { winner: 'Draw!' });
     }
   }
 
   function onClickBoard(index) {
     if (
-      (props.currentUser === props.userList.X || props.currentUser === props.userList.O) &&
-      gameOver === false
+      (props.currentUser === props.userList.X || props.currentUser === props.userList.O)
+      && gameOver === false
     ) {
       setRestartButton(true);
       const newBoard = [...board];
@@ -91,19 +90,29 @@ export function RenderBoard(props) {
       {gameOver === true ? (
         <div>
           <p> Game Over! </p>
-          <div>{winner === 'Draw!' ? <p> Draw! </p> : <p> {winner} wins! </p>}</div>
+          <div>
+            {winner === 'Draw!' ? <p> Draw! </p> : (
+              <p>
+                {' '}
+                {winner}
+                {' '}
+                wins!
+                {' '}
+              </p>
+            )}
+          </div>
           <div>
             {showRestartButton === true ? (
-              <button onClick={onClickRestart}>Restart</button>
+              <button type="button" onClick={onClickRestart}>Restart</button>
             ) : (
-              <div></div>
+              <div />
             )}
           </div>
         </div>
       ) : (
-        <div></div>
+        <div />
       )}
-      <div class="board">
+      <div className="board">
         <RenderSquare clickHandler={() => onClickBoard(0)} letter={board[0]} />
         <RenderSquare clickHandler={() => onClickBoard(1)} letter={board[1]} />
         <RenderSquare clickHandler={() => onClickBoard(2)} letter={board[2]} />
@@ -117,3 +126,19 @@ export function RenderBoard(props) {
     </div>
   );
 }
+
+RenderBoard.propTypes = {
+  currentUser: PropTypes.string,
+  userList: PropTypes.shape({
+    X: PropTypes.string,
+    O: PropTypes.string,
+    Spectators: PropTypes.arrayOf(
+      PropTypes.string,
+    ),
+  }),
+};
+
+RenderBoard.defaultProps = {
+  currentUser: '',
+  userList: { X: '', O: '', Spectators: [] },
+};

@@ -1,10 +1,9 @@
-import logo from './logo.svg';
 import './App.css';
-import { RenderBoard } from './Board.js';
-import { ListUsers } from './ListUsers.js';
-import { RenderLeaderboard } from './Leaderboard.js';
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import io from 'socket.io-client';
+import RenderBoard from './Board';
+import ListUsers from './ListUsers';
+import RenderLeaderboard from './Leaderboard';
 
 const socket = io();
 
@@ -51,7 +50,7 @@ function App() {
       {loggedIn === false ? (
         <div>
           <input ref={loginRef} type="text" />
-          <button onClick={() => updateUsers(loginRef.current.value)}>Login</button>
+          <button type="button" onClick={() => updateUsers(loginRef.current.value)}>Login</button>
         </div>
       ) : (
         <div>
@@ -81,11 +80,11 @@ function App() {
           <div>
             {showLeaderboard === false ? (
               <div>
-                <button onClick={onClickLeaderboard}> Show Leaderboard </button>
+                <button type="button" onClick={onClickLeaderboard}> Show Leaderboard </button>
               </div>
             ) : (
               <div>
-                <button onClick={onClickLeaderboard}> Hide Leaderboard </button>
+                <button type="button" onClick={onClickLeaderboard}> Hide Leaderboard </button>
                 <RenderLeaderboard leaderboard={leaderboard} currentUser={currentUser} />
               </div>
             )}

@@ -1,5 +1,20 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-export function ListUsers(props) {
-  return <li> {props.name} </li>;
+export default function ListUsers({ name }) {
+  return (
+    <li>
+      {' '}
+      {name}
+      {' '}
+    </li>
+  );
 }
+
+ListUsers.propTypes = {
+  name: PropTypes.string,
+};
+
+ListUsers.defaultProps = {
+  name: '',
+};
