@@ -4,7 +4,13 @@ import './Board.css';
 
 export default function RenderSquare({ clickHandler, letter }) {
   return (
-    <div role="button" tabIndex={0} onClick={clickHandler} onKeyPress={clickHandler} className="box">
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={clickHandler}
+      onKeyPress={clickHandler}
+      className="box"
+    >
       {letter}
     </div>
   );

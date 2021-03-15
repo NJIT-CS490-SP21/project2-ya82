@@ -50,7 +50,9 @@ function App() {
       {loggedIn === false ? (
         <div>
           <input ref={loginRef} type="text" />
-          <button type="button" onClick={() => updateUsers(loginRef.current.value)}>Login</button>
+          <button type="button" onClick={() => updateUsers(loginRef.current.value)}>
+            Login
+          </button>
         </div>
       ) : (
         <div>
@@ -80,11 +82,17 @@ function App() {
           <div>
             {showLeaderboard === false ? (
               <div>
-                <button type="button" onClick={onClickLeaderboard}> Show Leaderboard </button>
+                <button type="button" onClick={onClickLeaderboard}>
+                  {' '}
+                  Show Leaderboard{' '}
+                </button>
               </div>
             ) : (
               <div>
-                <button type="button" onClick={onClickLeaderboard}> Hide Leaderboard </button>
+                <button type="button" onClick={onClickLeaderboard}>
+                  {' '}
+                  Hide Leaderboard{' '}
+                </button>
                 <RenderLeaderboard leaderboard={leaderboard} currentUser={currentUser} />
               </div>
             )}
