@@ -14,11 +14,11 @@ export default function RenderLeaderboard({ leaderboard, currentUser }) {
         {leaderboard.players.map((player, index) => (
           <tr>
             {player === currentUser ? (
-              <td className="currentUser"> {player} </td>
+              <td className="currentUser">{player}</td>
             ) : (
-              <td> {player} </td>
+              <td>{player}</td>
             )}
-            <td> {leaderboard.scores[index]} </td>
+            <td>{leaderboard.scores[index]}</td>
           </tr>
         ))}
       </tbody>
