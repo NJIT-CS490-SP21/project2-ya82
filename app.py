@@ -5,7 +5,6 @@ from flask_socketio import SocketIO
 from flask_cors import CORS
 from dotenv import load_dotenv, find_dotenv
 from models import DB, Player
-from db_helpers import add_player, pull_leaderboard
 
 load_dotenv(find_dotenv())
 
@@ -23,6 +22,47 @@ SOCKET_IO = SocketIO(APP,
                      manage_session=False)
 
 
+def check_first_login(current_user, all_players):
+    """Returns true if the current user is not already in the all_players list"""
+    if current_user not in all_players:
+        return True
+    return False
+
+
+def update_leaderboard(players, scores):
+    """Returns a leaderboard dictionary containing the lists of player names
+    and player scores"""
+    leaderboard = {'players': [], 'scores': []}
+    for player in players:
+        leaderboard['players'].append(player)
+    for score in scores:
+        leaderboard['scores'].append(score)
+    return leaderboard
+
+
+def add_player(current_user):
+    all_players = []
+    for player in DB.session.query(Player).all():
+        all_players.append(player.username)
+
+    first_login = check_first_login(current_user, all_players)
+    if first_login is True:
+        current_user_entry = Player(username=current_user, score=100)
+        DB.session.add(current_user_entry)
+        DB.session.commit()
+
+
+def pull_leaderboard():
+    players = []
+    scores = []
+    for player in DB.session.query(Player).order_by(Player.score.desc()).all():
+        players.append(player.username)
+        scores.append(player.score)
+
+    leaderboard = update_leaderboard(players, scores)
+    return leaderboard
+
+
 @APP.route('/', defaults={"filename": "index.html"})
 @APP.route('/<path:filename>')
 def index(filename):
@@ -34,8 +74,6 @@ def index(filename):
 def on_login(data):
     """If a new user logs in, adds them to the database"""
     current_user = data['currentUser']
-
-    first
     add_player(current_user)
     leaderboard = pull_leaderboard()
 
