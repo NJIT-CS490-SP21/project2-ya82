@@ -5,6 +5,7 @@ from flask_socketio import SocketIO
 from flask_cors import CORS
 from dotenv import load_dotenv, find_dotenv
 from models import DB, Player
+from db_helpers import add_player, pull_leaderboard
 
 load_dotenv(find_dotenv())
 
@@ -29,50 +30,20 @@ def index(filename):
     return send_from_directory('./build', filename)
 
 
-def check_first_login(current_user, all_players):
-    """Returns true if the current user is not already in the all_players list"""
-    if current_user not in all_players:
-        return True
-    return False
-
-
 @SOCKET_IO.on('login')
 def on_login(data):
     """If a new user logs in, adds them to the database"""
-    all_players = []
     current_user = data['currentUser']
-    for player in DB.session.query(Player).all():
-        all_players.append(player.username)
 
-    first_login = check_first_login(current_user, all_players)
-    if first_login is True:
-        current_user_entry = Player(username=current_user, score=100)
-        DB.session.add(current_user_entry)
-        DB.session.commit()
+    first
+    add_player(current_user)
+    leaderboard = pull_leaderboard()
 
-    players = []
-    scores = []
-    for player in DB.session.query(Player).order_by(Player.score.desc()).all():
-        players.append(player.username)
-        scores.append(player.score)
-
-    leaderboard = update_leaderboard(players, scores)
     SOCKET_IO.emit('updateLeaderboard',
                    leaderboard,
                    broadcast=True,
                    include_self=True)
     SOCKET_IO.emit('login', data, broadcast=True, include_self=True)
-
-
-def update_leaderboard(players, scores):
-    """Returns a leaderboard dictionary containing the lists of player names
-    and player scores"""
-    leaderboard = {'players': [], 'scores': []}
-    for player in players:
-        leaderboard['players'].append(player)
-    for score in scores:
-        leaderboard['scores'].append(score)
-    return leaderboard
 
 
 @SOCKET_IO.on('move')
@@ -97,10 +68,7 @@ def on_game_over(data):
         print(loser.score)
         DB.session.commit()
 
-    leaderboard = {'players': [], 'scores': []}
-    for player in DB.session.query(Player).order_by(Player.score.desc()).all():
-        leaderboard['players'].append(player.username)
-        leaderboard['scores'].append(player.score)
+    leaderboard = pull_leaderboard()
 
     SOCKET_IO.emit('updateLeaderboard',
                    leaderboard,
