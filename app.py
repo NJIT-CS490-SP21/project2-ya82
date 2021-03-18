@@ -8,12 +8,16 @@ from models import DB, Player
 
 load_dotenv(find_dotenv())
 
-APP = Flask(__name__, static_folder='./build/static')
-APP.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+def create_app():
+    app = Flask(__name__, static_folder='./build/static')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    DB.init_app(app)
+    with app.app_context():
+        DB.create_all()
+    return app
 
-DB.create_all()
-DB.init_app(APP)
+APP = create_app()
 
 
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
