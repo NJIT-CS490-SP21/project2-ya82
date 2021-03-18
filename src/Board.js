@@ -46,8 +46,8 @@ export default function RenderBoard(props) {
 
   function onClickBoard(index) {
     if (
-      (props.currentUser === props.userList.X || props.currentUser === props.userList.O) &&
-      gameOver === false
+      (props.currentUser === props.userList.X || props.currentUser === props.userList.O)
+      && gameOver === false
     ) {
       setRestartButton(true);
       const newBoard = [...board];
@@ -90,7 +90,15 @@ export default function RenderBoard(props) {
       {gameOver === true ? (
         <div>
           <p> Game Over! </p>
-          <div>{winner === 'Draw!' ? <p> Draw! </p> : <p>{winner} wins!</p>}</div>
+          <div>
+            {winner === 'Draw!' ? <p> Draw! </p> : (
+              <p>
+                {winner}
+                {' '}
+                wins!
+              </p>
+            )}
+          </div>
           <div>
             {showRestartButton === true ? (
               <button type="button" onClick={onClickRestart}>
