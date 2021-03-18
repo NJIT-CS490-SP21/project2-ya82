@@ -82,13 +82,13 @@ function App() {
           <div>
             {showLeaderboard === false ? (
               <div>
-                <button type="button" onClick={onClickLeaderboard}>
+                <button type="submit" onClick={onClickLeaderboard}>
                   Show Leaderboard
                 </button>
               </div>
             ) : (
               <div>
-                <button type="button" onClick={onClickLeaderboard}>
+                <button type="submit" onClick={onClickLeaderboard}>
                   Hide Leaderboard
                 </button>
                 <RenderLeaderboard leaderboard={leaderboard} currentUser={currentUser} />
