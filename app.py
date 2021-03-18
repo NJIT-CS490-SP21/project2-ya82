@@ -12,8 +12,9 @@ APP = Flask(__name__, static_folder='./build/static')
 APP.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-DB.init_app(APP)
 DB.create_all()
+DB.init_app(APP)
+
 
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
 
