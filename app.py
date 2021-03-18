@@ -50,6 +50,11 @@ def add_player(current_user):
         current_user_entry = Player(username=current_user, score=100)
         DB.session.add(current_user_entry)
         DB.session.commit()
+        
+    players = []
+    for player in DB.session.query(Player).all():
+        players.append(player.username)
+    return players
 
 
 def pull_leaderboard():
@@ -94,7 +99,6 @@ def on_move(data):
 def on_game_over(data):
     """Upon receiving the gameOver emit, updates the players scores in the database and emits
      the updated leaderboard and gameOver signal to all clients"""
-    print('Game over emit received')
     if data['winner'] != 'Draw!':
         winner = DB.session.query(Player).filter_by(
             username=data['winner']).first()
@@ -102,8 +106,6 @@ def on_game_over(data):
             username=data['loser']).first()
         winner.score = winner.score + 1
         loser.score = loser.score - 1
-        print(winner.score)
-        print(loser.score)
         DB.session.commit()
 
     leaderboard = pull_leaderboard()
