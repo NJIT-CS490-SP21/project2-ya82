@@ -50,7 +50,7 @@ def add_player(current_user):
         current_user_entry = Player(username=current_user, score=100)
         DB.session.add(current_user_entry)
         DB.session.commit()
-        
+
     players = []
     for player in DB.session.query(Player).all():
         players.append(player.username)
