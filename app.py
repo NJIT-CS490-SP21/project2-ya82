@@ -13,6 +13,7 @@ APP.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 DB.init_app(APP)
+DB.create_all()
 
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
 
