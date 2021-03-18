@@ -8,6 +8,7 @@ from models import DB, Player
 
 load_dotenv(find_dotenv())
 
+
 def create_app():
     app = Flask(__name__, static_folder='./build/static')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
@@ -17,8 +18,8 @@ def create_app():
         DB.create_all()
     return app
 
-APP = create_app()
 
+APP = create_app()
 
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
 
