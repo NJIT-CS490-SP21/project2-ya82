@@ -10,6 +10,7 @@ load_dotenv(find_dotenv())
 
 
 def create_app():
+    """Intilizes and creates the Flask app and initial database at runtime"""
     app = Flask(__name__, static_folder='./build/static')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -48,6 +49,7 @@ def update_leaderboard(players, scores):
 
 
 def add_player(current_user):
+    """Adds a new player to the database, returns the playerlist"""
     all_players = []
     for player in DB.session.query(Player).all():
         all_players.append(player.username)
@@ -65,6 +67,7 @@ def add_player(current_user):
 
 
 def pull_leaderboard():
+    """Returns an updated version of the leaderboard from the database"""
     players = []
     scores = []
     for player in DB.session.query(Player).order_by(Player.score.desc()).all():
